@@ -1,0 +1,206 @@
+openapi: 3.0.0
+info:
+  title: Course Management API
+  description: An API for managing course information with CRUD operations.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Local Development Server
+
+tags:
+  - name: Courses
+    description: Operations related to managing courses.
+
+paths:
+  /courses:
+    get:
+      tags:
+        - Courses
+      summary: Get a list of all courses
+      description: Retrieve all available courses in the database.
+      operationId: getCourses
+      responses:
+        '200':
+          description: A list of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        '429':
+          description: Too many requests (rate limit exceeded)
+    post:
+      tags:
+        - Courses
+      summary: Create a new course
+      description: Add a new course to the database.
+      operationId: createCourse
+      requestBody:
+        description: Course object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseInput'
+      responses:
+        '201':
+          description: Course created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Too many requests (rate limit exceeded)
+
+  /courses/{course_id}:
+    get:
+      tags:
+        - Courses
+      summary: Get details of a specific course
+      description: Retrieve a specific course by its ID.
+      operationId: getCourse
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Course details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: Course not found
+        '429':
+          description: Too many requests (rate limit exceeded)
+    put:
+      tags:
+        - Courses
+      summary: Update an existing course
+      description: Modify the details of a course by its ID.
+      operationId: updateCourse
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Course object with updated values
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseInput'
+      responses:
+        '200':
+          description: Course updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid input data
+        '404':
+          description: Course not found
+        '429':
+          description: Too many requests (rate limit exceeded)
+    delete:
+      tags:
+        - Courses
+      summary: Delete a course
+      description: Remove a course by its ID.
+      operationId: deleteCourse
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Course deleted successfully
+        '404':
+          description: Course not found
+        '429':
+          description: Too many requests (rate limit exceeded)
+
+components:
+  schemas:
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique ID of the course
+        title:
+          type: string
+          description: Title of the course
+          example: Introduction to Python
+        description:
+          type: string
+          description: Detailed description of the course
+          example: A beginner-level course on Python programming.
+        instructor:
+          type: string
+          description: Instructor of the course
+          example: John Doe
+        duration:
+          type: integer
+          description: Duration of the course in hours
+          example: 40
+        enrollment_limit:
+          type: integer
+          description: Maximum number of students allowed to enroll
+          example: 50
+    CourseInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the course
+          example: Introduction to Python
+        description:
+          type: string
+          description: Detailed description of the course
+        instructor:
+          type: string
+          description: Instructor of the course
+          example: John Doe
+        duration:
+          type: integer
+          description: Duration of the course in hours
+          example: 40
+        enrollment_limit:
+          type: integer
+          description: Maximum number of students allowed to enroll
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Description of the error
+          example: Invalid input data
+  responses:
+    NotFound:
+      description: The specified resource was not found
+    TooManyRequests:
+      description: Too many requests, rate limit exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Too many requests, try again later.
