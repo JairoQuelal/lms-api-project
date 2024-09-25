@@ -1,134 +1,80 @@
 
-# Course Management System API
+# LMS API Project
 
-This is a RESTful API for managing course information, built using the Flask framework. It supports basic CRUD operations for courses and includes rate limiting, user authentication, role-based access control (RBAC), and audit logging for security and accountability.
+This project is a RESTful API for managing Learning Management System (LMS) functionality. It allows users to perform various operations related to courses, users, and permissions in the LMS, using a secure and efficient structure with role-based access control.
 
-## Features
+## Key Features
 
-- **CRUD Operations**: Create, read, update, and delete courses.
-- **Rate Limiting**: Limits the number of API requests to prevent abuse.
-- **User Authentication**: Uses HTTP Basic Authentication to verify users.
-- **Role-Based Access Control (RBAC)**: Permissions are assigned to roles, controlling access to certain actions.
-- **Audit Logging**: Logs all actions for tracking and auditing.
-- **Data Validation**: Ensures proper formatting and constraints for course details.
-  
-## Technologies Used
+- **CRUD Operations for Courses**: Create, read, update, and delete courses.
+- **Role-Based Access Control (RBAC)**: Users are assigned roles (admin, instructor, etc.) and permissions, ensuring that actions are restricted based on role.
+- **Rate Limiting**: To prevent abuse, each endpoint is protected by rate limits using Flask-Limiter.
+- **Audit Logging**: Every action (create, update, delete) is logged for tracking user activities.
+- **Basic Authentication**: HTTP Basic Authentication is used, secured with password hashing via Flask-Bcrypt.
+- **User and Role Management**: Admin can create users, assign roles, and manage permissions.
 
-- **Flask**: Web framework for Python.
-- **Flask-SQLAlchemy**: ORM for database interactions.
-- **Marshmallow**: Data validation and serialization.
-- **Flask-Limiter**: Implements rate limiting for API endpoints.
-- **Flask-Bcrypt**: Provides password hashing for security.
-- **Flask-HTTPAuth**: Basic authentication mechanism.
-  
-## Endpoints
-
-### Courses
-
-- **GET /courses**
-    - Retrieves a list of all courses.
-    - Requires the `view_courses` permission.
-    - Rate limit: 30 requests/minute.
-
-- **GET /courses/{course_id}**
-    - Retrieves a single course by ID.
-    - Requires the `view_course` permission.
-    - Rate limit: 60 requests/minute.
-
-- **POST /courses**
-    - Creates a new course.
-    - Requires the `create_course` permission.
-    - Rate limit: 10 requests/minute.
-    - Example request body:
-    ```json
-    {
-      "title": "Introduction to AI",
-      "description": "Learn the basics of AI.",
-      "instructor": "John Doe",
-      "duration": 10,
-      "enrollment_limit": 30
-    }
-    ```
-
-- **PUT /courses/{course_id}**
-    - Updates an existing course.
-    - Requires the `update_course` permission.
-    - Rate limit: 10 requests/minute.
-
-- **DELETE /courses/{course_id}**
-    - Deletes a course by ID.
-    - Requires the `delete_course` permission.
-    - Rate limit: 5 requests/minute.
-
-### Users
-
-- **GET /users**
-    - Retrieves a list of users.
-    - Admin only.
-
-- **POST /users**
-    - Creates a new user (admin role required).
-
-### Roles
-
-- **GET /roles**
-    - Retrieves all roles with their permissions.
-
-- **POST /roles**
-    - Creates a new role.
-
-## Authentication
-
-The API uses HTTP Basic Authentication. You must send a valid username and password with each request that requires authentication.
-
-### Example:
-```bash
-curl -u username:password http://localhost:5000/courses
-```
-
-### Role-Based Permissions
-
-- **Admin**: Can view, create, update, and delete courses.
-- **Instructor**: Can view courses but cannot modify or delete them.
-
-## Setup
+## Installation
 
 1. Clone the repository:
     ```bash
     git clone https://github.com/JairoQuelal/lms-api-project.git
+    cd lms-api-project
     ```
 
-2. Install dependencies:
+2. Create a virtual environment and activate it:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. Install the required dependencies:
     ```bash
     pip install -r requirements.txt
     ```
 
-3. Run the application:
+4. Set up the database:
     ```bash
-    python app.py
+    flask db upgrade
     ```
 
-4. Access the API at:
-    ```
-    http://localhost:5000
+5. Run the application:
+    ```bash
+    flask run
     ```
 
-## Database Setup
+## API Endpoints
 
-To initialize the SQLite database, run the following command:
+### Courses
+- **GET /courses**: Retrieves a list of all courses (Rate Limit: 30 requests/min).
+- **GET /courses/{id}**: Retrieves details of a specific course by ID (Rate Limit: 60 requests/min).
+- **POST /courses**: Creates a new course (Rate Limit: 10 requests/min).
+- **PUT /courses/{id}**: Updates an existing course (Rate Limit: 10 requests/min).
+- **DELETE /courses/{id}**: Deletes a course (Rate Limit: 5 requests/min).
+
+### Users & Roles
+- **GET /users**: Retrieves all users.
+- **POST /users**: Create a new user with a specified role.
+- **POST /roles**: Creates a new role.
+- **POST /roles/{role_id}/permissions**: Assign permissions to a role.
+
+### Authentication
+Basic authentication is required for most operations:
 ```bash
-python db_setup.py
+curl -u username:password http://localhost:5000/courses
 ```
 
-This will create the necessary tables and roles (admin, instructor), and an initial admin user.
+## Security and Authorization
+The API supports Role-Based Access Control (RBAC), where each role (e.g., admin, instructor) is associated with specific permissions. For example:
+- **Admin**: Can create, update, and delete any course, manage users and roles.
+- **Instructor**: Can view courses, create and update their own courses.
 
-## Future Improvements
+## Future Enhancements
 
-- **JWT Authentication**: Add JSON Web Token (JWT) authentication for more secure, stateless sessions.
-- **Pagination**: Implement pagination for large dataset responses.
-- **Logging and Monitoring**: Add logging for performance monitoring and issue tracking.
-- **Improved Error Handling**: Provide more detailed error messages for API consumers.
-  
+- **JWT Authentication**: Currently, the API uses basic auth, but future versions will incorporate JWT for better security.
+- **Enhanced Error Handling**: Improve error messages and add error codes for better debugging.
+- **Pagination**: Add pagination to endpoints like `GET /courses` to handle large datasets.
+
+## Contribution
+Feel free to contribute by submitting pull requests. Ensure that you run all tests before creating a pull request.
+
 ## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
