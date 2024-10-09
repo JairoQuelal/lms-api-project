@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask API - Gestión de Usuarios y Cursos</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Gestión de Usuarios y Cursos</h1>
+
+    <!-- Sección de registro -->
+    <div id="register-section">
+        <h2>Registro de Usuario</h2>
+        <form id="register-form">
+            <input type="text" id="register-username" placeholder="Nombre de usuario" required>
+            <input type="password" id="register-password" placeholder="Contraseña" required>
+            <label for="role">Selecciona un rol:</label>
+            <select id="role">
+                <option value="user">Usuario</option>
+                <option value="admin">Admin</option>
+                <option value="editor">Editor</option>
+                <option value="viewer">Viewer</option>
+            </select>
+            <button type="submit">Registrar</button>
+        </form>
+        <div id="register-response"></div>
+    </div>
+
+    <!-- Sección de login -->
+    <div id="login-section">
+        <h2>Login de Usuario</h2>
+        <form id="login-form">
+            <input type="text" id="login-username" placeholder="Nombre de usuario" required>
+            <input type="password" id="login-password" placeholder="Contraseña" required>
+            <button type="submit">Login</button>
+        </form>
+        <div id="login-response"></div>
+    </div>
+
+    <!-- Sección de gestión de cursos -->
+    <div id="courses-section" style="display:none;">
+        <h2>Gestión de Cursos</h2>
+
+        <!-- Crear un curso (Visible solo para admin/editor) -->
+        <div id="create-course-section" style="display:none;">
+            <h3>Crear Curso</h3>
+            <form id="create-course-form">
+                <input type="text" id="course-title" placeholder="Título del curso" required>
+                <input type="text" id="course-description" placeholder="Descripción" required>
+                <input type="text" id="course-instructor" placeholder="Instructor" required>
+                <input type="number" id="course-duration" placeholder="Duración en horas" required>
+                <input type="number" id="course-enrollment-limit" placeholder="Límite de inscripción" required>
+                <button type="submit">Crear Curso</button>
+            </form>
+            <div id="create-course-response"></div>
+        </div>
+
+        <!-- Eliminar un curso (Visible solo para admin) -->
+        <div id="delete-course-section" style="display:none;">
+            <h3>Eliminar Curso</h3>
+            <form id="delete-course-form">
+                <input type="number" id="delete-course-id" placeholder="ID del curso" required>
+                <button type="submit">Eliminar Curso</button>
+            </form>
+            <div id="delete-course-response"></div>
+        </div>
+
+        <!-- Actualizar un curso (Visible solo para admin/editor) -->
+        <div id="update-course-section" style="display:none;">
+            <h3>Actualizar Curso</h3>
+            <form id="update-course-form">
+                <input type="number" id="update-course-id" placeholder="ID del curso a actualizar" required>
+                <input type="text" id="update-course-title" placeholder="Nuevo título">
+                <input type="text" id="update-course-description" placeholder="Nueva descripción">
+                <input type="text" id="update-course-instructor" placeholder="Nuevo instructor">
+                <input type="number" id="update-course-duration" placeholder="Nueva duración">
+                <input type="number" id="update-course-enrollment-limit" placeholder="Nuevo límite de inscripción">
+                <button type="submit">Actualizar Curso</button>
+            </form>
+            <div id="update-course-response"></div>
+        </div>
+
+        <!-- Obtener curso por ID (Visible para todos) -->
+        <div id="get-course-section">
+            <h3>Obtener Curso por ID</h3>
+            <form id="get-course-form">
+                <input type="number" id="get-course-id" placeholder="ID del curso" required>
+                <button type="submit">Obtener Curso</button>
+            </form>
+            <div id="get-course-response"></div>
+        </div>
+
+        <!-- Lista de cursos -->
+        <h3>Lista de Cursos</h3>
+        <div id="courses-list"></div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
